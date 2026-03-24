@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electricity Bill Calculator</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            width: 100%;
+            max-width: 460px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+        }
+
+        .icon { font-size: 48px; text-align: center; margin-bottom: 8px; }
+
+        h1 {
+            text-align: center;
+            font-size: 22px;
+            color: #1a202c;
+            margin-bottom: 6px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #718096;
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 8px;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        input[type="number"]:focus {
+            border-color: #4f6ef7;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 14px;
+            background: #4f6ef7;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover { background: #3b55d4; }
+
+        /* Result box — hidden by default, shown when result exists */
+        .result {
+            margin-top: 28px;
+            background: #ebf8ff;
+            border: 1px solid #bee3f8;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .result .label {
+            font-size: 13px;
+            color: #2b6cb0;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .result .kwh {
+            font-size: 15px;
+            color: #4a5568;
+            margin: 6px 0;
+        }
+
+        .result .amount {
+            font-size: 36px;
+            font-weight: 700;
+            color: #2b6cb0;
+            margin: 8px 0;
+        }
+
+        .result .note {
+            font-size: 12px;
+            color: #718096;
+            margin-top: 10px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <!-- <div class="icon">⚡</div> -->
+    <h1>Electricity Bill Calculator</h1>
+    <p class="subtitle">Enter your usage to estimate your energy charge</p>
+
+    <!--
+        th:action="@{/calculate}" → submits to POST /calculate
+        method="post" → sends data securely
+    -->
+    <form th:action="@{/calculate}" method="post">
+        <label for="kwh">Units Consumed (kWh)</label>
+        <input
+            type="number"
+            id="kwh"
+            name="kwh"
+            min="1"
+            placeholder="e.g. 350"
+            th:value="${kwh}"
+            required
+        />
+        <button type="submit">Calculate Bill</button>
+    </form>
+
+    <!--
+        th:if="${bill}" → this block only appears AFTER form is submitted
+        th:text="${...}" → inserts the Java variable into the HTML
+    -->
+    <div class="result" th:if="${bill}">
+        <div class="label">Estimated Energy Charge</div>
+        <div class="kwh" th:text="'Usage: ' + ${kwh} + ' kWh'"></div>
+        <div class="amount" th:text="'₹' + ${bill}"></div>
+        <div class="note">
+            ⚠️ Actual bill may vary based on meter charge,
+            govt. subsidies, adjustments, and other factors.
+            This shows the energy charge only.
+        </div>
+    </div>
+</div>
+</body>
+</html>
